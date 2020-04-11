@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>test</title>
+    <script>
+        var moveSlider = function (slider, direction) {
+            var value = slider.value;
+            var circle = document.getElementById("target");
+            var coord = "c" + direction;
+            circle.setAttributeNS(null, coord, value * 5);
+        }
+    </script>
+</head>
+
+<body overflow="visible">
+    <svg width="800" height="300">
+        <circle id="target" cx="30" cy="10" r="10" stroke="green" stroke-width="4" fill="yellow" />
+    </svg>
+    <br>
+    <input type="range" min="1" max="60" value="20" oninput="moveSlider(this, 'x')" />
+    <input type="range" min="1" max="40" value="10" oninput="moveSlider(this, 'y')" />
+
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" id="tooltip-svg" style="overflow:'visible'">
+        <rect class="tooltip-trigger" x="40" y="50" width="80" height="100" fill="#007bbf"
+            data-tooltip-text="Affu ma" />
+        <rect class="tooltip-trigger" x="180" y="50" width="80" height="100" fill="#ec008c"
+            data-tooltip-text="Gaana gaaaaaaaaaaaaaaaao" />
+        <g id="tooltip" visibility="hidden">
+            <rect x="2" y="2" width="80" height="24" fill="black" opacity="0.4" rx="2" ry="2" />
+            <rect width="80" height="24" fill="white" rx="2" ry="2" />
+            <text x="4" y="15">Tooltip</text>
+        </g>
+        <script type="text/javascript">
+                (function () {
+                    var tooltip = document.getElementById('tooltip');
+                    var tooltipRects = tooltip.getElementsByTagName('rect');
+                    var triggers = document.getElementsByClassName('tooltip-trigger');
+                    for (var i = 0; i < triggers.length; i++) {
+                        triggers[i].addEventListener('mousemove', showTooltip);
+                        triggers[i].addEventListener('mouseout', hideTooltip);
+                    }
+                    function hideTooltip() {
+                        tooltip.setAttributeNS(null, "visibility", "hidden");
+                    }
+                    function showTooltip(evt) {
+                        var svg = document.getElementById('tooltip-svg');
+                        var CTM = svg.getScreenCTM();
+
+                        var x = (evt.clientX - CTM.e + 6) / CTM.a;
+                        var y = (evt.clientY - CTM.f + 20) / CTM.d;
+                        tooltip.setAttributeNS(null, "transform", "translate(" + x + " " + y + ")");
+                        var tooltipText = tooltip.getElementsByTagName('text')[0];
+                        tooltipText.firstChild.data = evt.target.getAttributeNS(null, "data-tooltip-text");
+
+                        var length = tooltipText.getComputedTextLength();
+                        for (var i = 0; i < tooltipRects.length; i++) {
+                            tooltipRects[i].setAttributeNS(null, "width", length + 8);
+                        }
+
+                        tooltip.setAttributeNS(null, "visibility", "visible");
+
+                    }
+                })();
+
+        </script>
+    </svg>
+
+
+</body>
+
+</html>
